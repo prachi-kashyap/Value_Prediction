@@ -18,8 +18,29 @@ def make_prediction(inputs: list[float], outputs: list[float], input_value: floa
     x = np.array(df['inputs']).reshape(-1, 1)
     y = np.array(df['outputs']).reshape(-1, 1)
 
-    print(x)
-    print(y)
-    # Reshape the data into training data to test our model
+    # Split the data into training data to test our model
+    train_x, test_x, train_y, test_y = train_test_split(x,y,random_state=0, test_size=.20)
+    
+    # Initialize the model and test it
+    model = LinearRegression()
+    model.fit(train_x, train_y)
+
+    # Prediction
+    y_prediction = model.predict([[input_value]])
+    y_line = model.predict(x)
+
+    # Testing for accuracy
+    y_test_prediction = model.predict(test_x)
+
+    # Plot
+    if plot:
+        raise NotImplementedError('Function not there yet')
+
+    return Prediction(value=y_prediction[0][0],
+                      r2_score=r2_score(test_y,y_test_prediction),
+                      slope=model.coef_[0][0],
+                      intercept=model.intercept_[0],
+                      mean_absolute_error=mean_absolute_error(test_y,y_test_prediction))
+
 
 make_prediction([1,2],[3,4], 0)
